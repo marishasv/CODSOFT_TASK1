@@ -1,0 +1,763 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Marisha.S — Frontend Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0b0e14;
+    --bg-raised: #11151f;
+    --bg-card: #141926;
+    --line: #232a3a;
+    --text: #e7ecf5;
+    --text-dim: #8993a8;
+    --accent: #5eead4;      /* cyan-mint, "cursor" color */
+    --accent-2: #f5a95e;    /* warm amber, "string" color */
+    --accent-3: #c084fc;    /* violet, "keyword" color */
+    --danger: #ff6b6b;
+    --radius: 10px;
+  }
+
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  html{ scroll-behavior: smooth; }
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  ::selection{ background: var(--accent); color: #04120f; }
+
+  h1,h2,h3, .mono{ font-family: 'JetBrains Mono', monospace; }
+
+  a{ color: inherit; text-decoration: none; }
+  ul{ list-style: none; }
+  img{ max-width: 100%; display:block; }
+
+  .container{
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .eyebrow::before{
+    content:"";
+    width:7px; height:7px; border-radius:50%;
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+  }
+
+  /* ---------- NAV ---------- */
+  header{
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 1000;
+    background: rgba(11,14,20,0.82);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  nav{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding: 16px 24px;
+    max-width: 1080px;
+    margin: 0 auto;
+  }
+  .logo{
+    font-family:'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: -0.02em;
+  }
+  .logo span{ color: var(--accent); }
+
+  .nav-links{
+    display:flex;
+    gap: 32px;
+    font-size: 0.92rem;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .nav-links a{
+    color: var(--text-dim);
+    position: relative;
+    padding: 4px 0;
+    transition: color .2s ease;
+  }
+  .nav-links a::before{ content: "<"; color: var(--accent-3); opacity:0; transition: opacity .2s ease, margin .2s ease; margin-right:0; }
+  .nav-links a:hover{ color: var(--text); }
+  .nav-links a:hover::before{ opacity:1; margin-right:4px; }
+
+  .burger{
+    display:none;
+    flex-direction:column;
+    gap:5px;
+    background:none; border:none; cursor:pointer;
+    padding: 6px;
+  }
+  .burger span{
+    width: 24px; height: 2px; background: var(--text);
+    transition: all .25s ease;
+  }
+  .burger.open span:nth-child(1){ transform: translateY(7px) rotate(45deg); }
+  .burger.open span:nth-child(2){ opacity:0; }
+  .burger.open span:nth-child(3){ transform: translateY(-7px) rotate(-45deg); }
+
+  @media (max-width: 760px){
+    .nav-links{
+      position: fixed;
+      top: 60px; right: 0;
+      background: var(--bg-raised);
+      border-left: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+      flex-direction: column;
+      gap: 0;
+      width: 220px;
+      transform: translateX(100%);
+      transition: transform .3s ease;
+    }
+    .nav-links.open{ transform: translateX(0); }
+    .nav-links a{
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--line);
+      display:block;
+    }
+    .burger{ display:flex; }
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height: 100vh;
+    display:flex;
+    align-items:center;
+    padding-top: 90px;
+    position: relative;
+  }
+  .hero::before{
+    content:"";
+    position:absolute;
+    top: 10%; right: -10%;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(94,234,212,0.09), transparent 70%);
+    pointer-events:none;
+  }
+
+  .hero-grid{
+    display:grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 48px;
+    align-items:center;
+    width:100%;
+  }
+  @media(max-width: 860px){
+    .hero-grid{ grid-template-columns: 1fr; }
+  }
+
+  .hero h1{
+    font-size: clamp(2.2rem, 5vw, 3.4rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+  .hero h1 .accent{ color: var(--accent); }
+  .hero p.sub{
+    margin-top: 20px;
+    color: var(--text-dim);
+    font-size: 1.08rem;
+    max-width: 520px;
+  }
+  .hero-cta{
+    margin-top: 32px;
+    display:flex;
+    gap:16px;
+    flex-wrap: wrap;
+  }
+  .btn{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+    padding: 13px 24px;
+    border-radius: var(--radius);
+    border: 1px solid var(--line);
+    cursor:pointer;
+    transition: all .2s ease;
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+  }
+  .btn-primary{
+    background: var(--accent);
+    color: #04120f;
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+  .btn-primary:hover{ box-shadow: 0 0 24px rgba(94,234,212,0.35); transform: translateY(-1px); }
+  .btn-ghost{ color: var(--text); background: transparent; }
+  .btn-ghost:hover{ border-color: var(--accent); color: var(--accent); }
+
+  /* code editor card */
+  .editor-card{
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow:hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+  }
+  .editor-topbar{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding: 12px 16px;
+    background: var(--bg-raised);
+    border-bottom: 1px solid var(--line);
+  }
+  .dot{ width:10px; height:10px; border-radius:50%; }
+  .dot.r{ background:#ff5f56; }
+  .dot.y{ background:#ffbd2e; }
+  .dot.g{ background:#27c93f; }
+  .editor-filename{
+    margin-left: 10px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+  }
+  .editor-body{
+    padding: 20px 22px;
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    line-height: 1.9;
+  }
+  .ln{ color: #4a5468; display:inline-block; width: 22px; user-select:none; }
+  .kw{ color: var(--accent-3); }
+  .str{ color: var(--accent-2); }
+  .fn{ color: var(--accent); }
+  .cm{ color: #5a6577; font-style: italic; }
+  .cursor-blink{
+    display:inline-block;
+    width: 8px; height: 16px;
+    background: var(--accent);
+    animation: blink 1s step-end infinite;
+    vertical-align: middle;
+  }
+  @keyframes blink{ 50%{ opacity:0; } }
+
+  /* ---------- SECTION SHELL ---------- */
+  section{ padding: 110px 0; border-bottom: 1px solid var(--line); }
+  .section-head{ margin-bottom: 48px; }
+  .section-head h2{
+    font-size: clamp(1.6rem, 3vw, 2.2rem);
+    font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items:start;
+  }
+  @media(max-width:800px){ .about-grid{ grid-template-columns: 1fr; } }
+  .about-grid p{ color: var(--text-dim); margin-bottom: 16px; font-size: 1.02rem; }
+  .about-grid strong{ color: var(--text); }
+
+  .stat-row{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 8px;
+  }
+  .stat{
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px 16px;
+    text-align:center;
+  }
+  .stat .num{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--accent);
+  }
+  .stat .label{ font-size: 0.78rem; color: var(--text-dim); margin-top: 4px; }
+
+  /* ---------- SKILLS ---------- */
+  .skills-wrap{
+    background: var(--bg-card);
+    border:1px solid var(--line);
+    border-radius: 12px;
+    padding: 8px;
+  }
+  .skills-tabbar{
+    display:flex;
+    gap: 4px;
+    padding: 8px 8px 0;
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+  }
+  .skills-tab{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    padding: 10px 16px;
+    color: var(--text-dim);
+    cursor:pointer;
+    border-bottom: 2px solid transparent;
+    transition: all .2s ease;
+  }
+  .skills-tab.active{ color: var(--accent); border-color: var(--accent); }
+  .skills-panel{ display:none; padding: 28px 22px; }
+  .skills-panel.active{ display:grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap: 14px; }
+  .skill-chip{
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 0.88rem;
+    display:flex;
+    align-items:center;
+    gap:10px;
+    transition: border-color .2s ease, transform .2s ease;
+  }
+  .skill-chip:hover{ border-color: var(--accent); transform: translateY(-2px); }
+  .skill-chip .bar{
+    width: 8px; height: 8px; border-radius:50%;
+    background: var(--accent-3);
+    flex-shrink:0;
+  }
+
+  /* ---------- PROJECTS ---------- */
+  .projects-grid{
+    display:grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .project-card{
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow:hidden;
+    display:flex;
+    flex-direction:column;
+    transition: transform .25s ease, border-color .25s ease;
+  }
+  .project-card:hover{ transform: translateY(-6px); border-color: var(--accent); }
+  .project-thumb{
+    height: 150px;
+    background:
+      linear-gradient(135deg, rgba(94,234,212,0.12), rgba(192,132,252,0.12)),
+      repeating-linear-gradient(90deg, transparent, transparent 38px, rgba(255,255,255,0.03) 39px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'JetBrains Mono', monospace;
+    color: var(--text-dim);
+    font-size: 0.78rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .project-body{ padding: 22px; flex:1; display:flex; flex-direction:column; }
+  .project-tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: var(--accent-2);
+    margin-bottom: 8px;
+  }
+  .project-body h3{ font-size: 1.1rem; margin-bottom: 10px; }
+  .project-body p{ color: var(--text-dim); font-size: 0.92rem; flex:1; margin-bottom: 16px; }
+  .project-links{ display:flex; gap: 14px; font-family:'JetBrains Mono', monospace; font-size: 0.82rem; }
+  .project-links a{ color: var(--accent); border-bottom: 1px solid transparent; }
+  .project-links a:hover{ border-color: var(--accent); }
+
+  /* ---------- RESUME ---------- */
+  .resume-box{
+    background: var(--bg-card);
+    border: 1px dashed var(--line);
+    border-radius: 12px;
+    padding: 48px;
+    text-align:center;
+  }
+  .resume-box p{ color: var(--text-dim); margin: 14px auto 24px; max-width: 460px; }
+
+  /* ---------- CONTACT ---------- */
+  .contact-grid{
+    display:grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 48px;
+  }
+  @media(max-width:800px){ .contact-grid{ grid-template-columns: 1fr; } }
+  .contact-info a, .contact-info div{
+    display:flex;
+    align-items:center;
+    gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    font-size: 0.95rem;
+  }
+  .contact-info .ic{
+    width: 34px; height:34px;
+    border-radius: 8px;
+    background: var(--bg-raised);
+    border: 1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    color: var(--accent);
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    flex-shrink:0;
+  }
+
+  form{ display:flex; flex-direction:column; gap: 16px; }
+  .field{ display:flex; flex-direction:column; gap: 6px; }
+  .field label{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.76rem;
+    color: var(--text-dim);
+  }
+  .field input, .field textarea{
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.94rem;
+    outline:none;
+    transition: border-color .2s ease;
+  }
+  .field input:focus, .field textarea:focus{ border-color: var(--accent); }
+  .field.error input, .field.error textarea{ border-color: var(--danger); }
+  .field .err-msg{
+    font-size: 0.76rem;
+    color: var(--danger);
+    display:none;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .field.error .err-msg{ display:block; }
+  textarea{ resize: vertical; min-height: 110px; }
+  .form-status{
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--accent);
+    display:none;
+  }
+  .form-status.show{ display:block; }
+
+  footer{
+    padding: 32px 0;
+    text-align:center;
+    color: var(--text-dim);
+    font-family:'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+  }
+
+  /* focus visibility */
+  a:focus-visible, button:focus-visible, input:focus-visible, textarea:focus-visible{
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+    html{ scroll-behavior: auto; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo">marisha<span>.</span>s</div>
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#home">home</a></li>
+      <li><a href="#about">about</a></li>
+      <li><a href="#skills">skills</a></li>
+      <li><a href="#projects">projects</a></li>
+      <li><a href="#resume">resume</a></li>
+      <li><a href="#contact">contact</a></li>
+    </ul>
+    <button class="burger" id="burger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+</header>
+
+<section class="hero" id="home">
+  <div class="container hero-grid">
+    <div>
+      <div class="eyebrow">available for internships &amp; frontend roles</div>
+      <h1>Building interfaces that feel <span class="accent">obvious</span> to use.</h1>
+      <p class="sub">Hi, I'm Marisha — a 2nd year CSE student passionate about frontend development. I like turning ideas into fast, responsive, well-crafted web experiences.</p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn btn-primary">View Projects →</a>
+        <a href="#contact" class="btn btn-ghost">Get in Touch</a>
+      </div>
+    </div>
+    <div class="editor-card">
+      <div class="editor-topbar">
+        <span class="dot r"></span><span class="dot y"></span><span class="dot g"></span>
+        <span class="editor-filename">marisha.js</span>
+      </div>
+      <div class="editor-body">
+        <div><span class="ln">01</span><span class="kw">const</span> developer = {</div>
+        <div><span class="ln">02</span>&nbsp;&nbsp;name: <span class="str">'Marisha.S'</span>,</div>
+        <div><span class="ln">03</span>&nbsp;&nbsp;role: <span class="str">'CSE Student, Frontend Dev'</span>,</div>
+        <div><span class="ln">04</span>&nbsp;&nbsp;stack: [<span class="str">'HTML'</span>, <span class="str">'CSS'</span>, <span class="str">'JS'</span>],</div>
+        <div><span class="ln">05</span>&nbsp;&nbsp;<span class="fn">isLearning</span>: () =&gt; <span class="kw">true</span>,</div>
+        <div><span class="ln">06</span>}</div>
+        <div><span class="ln">07</span></div>
+        <div><span class="ln">08</span><span class="cm">// currently building →</span></div>
+        <div><span class="ln">09</span><span class="fn">portfolio</span>()<span class="cursor-blink"></span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="about">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">about</div>
+      <h2>A little about me</h2>
+    </div>
+    <div class="about-grid">
+      <div>
+        <p><strong>Marisha.S</strong> is a 2nd year CSE student passionate about frontend development, currently learning how to design and build clean, responsive, user-focused web interfaces.</p>
+        <p>I enjoy the process of turning a blank page into something interactive — figuring out layout, adding thoughtful motion, and making sure it works just as well on a phone as it does on a laptop.</p>
+        <p>Right now I'm sharpening my skills through hands-on projects and a frontend development internship, with the goal of building a strong, practical foundation in <strong>HTML, CSS, and JavaScript</strong>.</p>
+      </div>
+      <div class="stat-row">
+        <div class="stat"><div class="num">2nd</div><div class="label">Year, CSE</div></div>
+        <div class="stat"><div class="num">3+</div><div class="label">Projects in progress</div></div>
+        <div class="stat"><div class="num">100%</div><div class="label">Responsive builds</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="skills">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">skills</div>
+      <h2>What I work with</h2>
+    </div>
+    <div class="skills-wrap">
+      <div class="skills-tabbar" id="skillsTabbar">
+        <div class="skills-tab active" data-panel="panel-core">Core</div>
+        <div class="skills-tab" data-panel="panel-tools">Tools</div>
+        <div class="skills-tab" data-panel="panel-learning">Currently Learning</div>
+      </div>
+      <div class="skills-panel active" id="panel-core">
+        <div class="skill-chip"><span class="bar"></span>HTML5</div>
+        <div class="skill-chip"><span class="bar"></span>CSS3</div>
+        <div class="skill-chip"><span class="bar"></span>JavaScript</div>
+        <div class="skill-chip"><span class="bar"></span>Responsive Design</div>
+        <div class="skill-chip"><span class="bar"></span>DOM Manipulation</div>
+        <div class="skill-chip"><span class="bar"></span>Local Storage</div>
+      </div>
+      <div class="skills-panel" id="panel-tools">
+        <div class="skill-chip"><span class="bar"></span>Git &amp; GitHub</div>
+        <div class="skill-chip"><span class="bar"></span>VS Code</div>
+        <div class="skill-chip"><span class="bar"></span>Chrome DevTools</div>
+        <div class="skill-chip"><span class="bar"></span>Figma (basics)</div>
+      </div>
+      <div class="skills-panel" id="panel-learning">
+        <div class="skill-chip"><span class="bar"></span>React</div>
+        <div class="skill-chip"><span class="bar"></span>Tailwind CSS</div>
+        <div class="skill-chip"><span class="bar"></span>API Integration</div>
+        <div class="skill-chip"><span class="bar"></span>Data Structures</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="projects">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">projects</div>
+      <h2>Things I've built</h2>
+    </div>
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="project-thumb">&lt;/portfolio-website&gt;</div>
+        <div class="project-body">
+          <div class="project-tag">CODSOFT_TASK1</div>
+          <h3>Personal Portfolio Website</h3>
+          <p>A responsive personal site (this one!) showcasing my skills, projects, and profile with smooth scrolling and mobile-friendly navigation.</p>
+          <div class="project-links">
+            <a href="#" target="_blank" rel="noopener">GitHub ↗</a>
+            <a href="#" target="_blank" rel="noopener">Live Demo ↗</a>
+          </div>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-thumb">&lt;/todo-app&gt;</div>
+        <div class="project-body">
+          <div class="project-tag">CODSOFT_TASK2</div>
+          <h3>To-Do List Application</h3>
+          <p>A task manager with add, edit, delete, search, and filter features — tasks persist after refresh using Local Storage.</p>
+          <div class="project-links">
+            <a href="#" target="_blank" rel="noopener">GitHub ↗</a>
+            <a href="#" target="_blank" rel="noopener">Live Demo ↗</a>
+          </div>
+        </div>
+      </div>
+      <div class="project-card">
+        <div class="project-thumb">&lt;/expense-tracker&gt;</div>
+        <div class="project-body">
+          <div class="project-tag">CODSOFT_TASK3</div>
+          <h3>Expense Tracker</h3>
+          <p>Tracks income and expenses with auto-calculated balance, category filtering, and a saved transaction history.</p>
+          <div class="project-links">
+            <a href="#" target="_blank" rel="noopener">GitHub ↗</a>
+            <a href="#" target="_blank" rel="noopener">Live Demo ↗</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="resume">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">resume</div>
+      <h2>Download my resume</h2>
+    </div>
+    <div class="resume-box">
+      <div class="eyebrow" style="justify-content:center;">resume.pdf</div>
+      <p>Add your resume PDF to the project folder and link it here so visitors can view your full experience and education.</p>
+      <button class="btn btn-primary" id="resumeBtn">Download Resume ↓</button>
+    </div>
+  </div>
+</section>
+
+<section id="contact" style="border-bottom:none;">
+  <div class="container">
+    <div class="section-head">
+      <div class="eyebrow">contact</div>
+      <h2>Let's build something</h2>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <a href="mailto:marisha.svb@gmail.com">
+          <span class="ic">@</span> marisha.svb@gmail.com
+        </a>
+        <a href="#" target="_blank" rel="noopener">
+          <span class="ic">GH</span> github.com/your-username
+        </a>
+        <a href="#" target="_blank" rel="noopener">
+          <span class="ic">in</span> linkedin.com/in/your-username
+        </a>
+        <div>
+          <span class="ic">📍</span> St Joseph College of Engineering, Sriperumbudur
+        </div>
+      </div>
+      <form id="contactForm" novalidate>
+        <div class="field" id="field-name">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" placeholder="Your name">
+          <span class="err-msg">Please enter your name.</span>
+        </div>
+        <div class="field" id="field-email">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com">
+          <span class="err-msg">Please enter a valid email address.</span>
+        </div>
+        <div class="field" id="field-message">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" placeholder="Say hello..."></textarea>
+          <span class="err-msg">Please enter a message.</span>
+        </div>
+        <button type="submit" class="btn btn-primary" style="align-self:flex-start;">Send Message →</button>
+        <span class="form-status" id="formStatus">Message validated — connect this form to an email service (e.g. Formspree) to make it live.</span>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer>
+  designed &amp; built by Marisha.S — © <span id="year"></span>
+</footer>
+
+<script>
+  // Mobile nav toggle
+  const burger = document.getElementById('burger');
+  const navLinks = document.getElementById('navLinks');
+  burger.addEventListener('click', () => {
+    burger.classList.toggle('open');
+    navLinks.classList.toggle('open');
+  });
+  navLinks.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      burger.classList.remove('open');
+      navLinks.classList.remove('open');
+    });
+  });
+
+  // Skills tabs
+  const tabs = document.querySelectorAll('.skills-tab');
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.skills-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.panel).classList.add('active');
+    });
+  });
+
+  // Resume button placeholder behavior
+  document.getElementById('resumeBtn').addEventListener('click', () => {
+    alert('Add your resume.pdf file to this folder and link it to this button to enable downloads.');
+  });
+
+  // Contact form validation
+  const form = document.getElementById('contactForm');
+  const status = document.getElementById('formStatus');
+
+  function setError(fieldId, hasError){
+    const field = document.getElementById(fieldId);
+    field.classList.toggle('error', hasError);
+  }
+
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const message = document.getElementById('message').value.trim();
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    let valid = true;
+    setError('field-name', name.length === 0);
+    if(name.length === 0) valid = false;
+
+    const emailValid = emailPattern.test(email);
+    setError('field-email', !emailValid);
+    if(!emailValid) valid = false;
+
+    setError('field-message', message.length === 0);
+    if(message.length === 0) valid = false;
+
+    if(valid){
+      status.classList.add('show');
+      form.reset();
+    } else {
+      status.classList.remove('show');
+    }
+  });
+
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>
